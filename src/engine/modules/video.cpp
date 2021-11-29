@@ -12,6 +12,7 @@
 #include "modules/file_service.hpp"
 #include "../include/utils/string.hpp"
 #include "../include/utils/debug.hpp"
+
 #include "modules/audio.hpp"
 
 #include <loadfile.h>
@@ -110,6 +111,93 @@ void Video::MPEG_Initialize(char *path)
     } 
     videoLoaded = true;
 
+    avi = fopen(fullFilename, "loaded");
+    mpg = fopen(fullFilename, "loaded");
+    m1v = fopen(fullFilename, "loaded");
+    m2v = fopen(fullFilename, "loaded");
+    videoLoaded = true;
+    consoleLog("Loaded video");
+   switch ('video')
+   {
+      case 'avi':
+      {
+        if (MPEG_VIDEO_FORMAT_NTSC)
+        {          
+          avi;
+          m_VideoFmt->m_Profile;
+          m_Width->m_Height;
+          m_frame_cnt;
+        }
+
+        if (MPEG_VIDEO_FORMAT_PAL)
+        {
+           avi;
+           m_Width->m_Height;
+           m_frame_cnt->m_ChromaFmt;
+        }
+      }
+      break;
+      
+      case 'mpg':
+      {
+         if (MPEG_VIDEO_FORMAT_NTSC)
+         {
+            mpg;
+            m_Width->m_Height;
+            m_frame_cnt;
+         }
+
+         if (MPEG_VIDEO_FORMAT_PAL)
+         {
+           mpg;
+           m_Width->m_Height;
+           m_frame_cnt;
+         }
+         break;   
+      }
+      case 'm2v':
+      {
+         if (MPEG_VIDEO_FORMAT_NTSC)
+         {
+            m2v;
+            m_Width->m_Height;
+            m_frame_cnt;
+         }
+
+         if (MPEG_VIDEO_FORMAT_PAL)
+         {
+           m2v;
+           m_Width->m_Height;
+           m_frame_cnt;
+         }
+         break;
+      }
+      case 'm1v':
+      {
+          if (MPEG_VIDEO_FORMAT_NTSC)
+         {
+            m1v;
+            m_Width->m_Height;
+            m_frame_cnt;
+         }
+
+         if (MPEG_VIDEO_FORMAT_PAL)
+         {
+           m1v;
+           m_Width->m_Height;
+           m_frame_cnt;
+         }
+         break;
+      }
+      
+      default:
+      {
+        assertMsg(avi != NULL, "Failed to open avi file");
+        assertMsg(mpg != NULL, "Failed to open mpg file");
+        assertMsg(m1v != NULL, "Failed to open m1v file");
+        assertMsg(m2v != NULL, "Failed to open m2v file");
+      } 
+    }
   }
 }
 

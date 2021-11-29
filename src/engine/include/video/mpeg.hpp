@@ -9,7 +9,9 @@
 # Based on Eugene Plotnikov work: SIMPLE MEDIA SYSTEM
 */
 
+
 #define __libmpeg_HPP
+
 #define _MPEG_PT_I 1
 #define _MPEG_PT_P 2
 #define _MPEG_PT_B 3
@@ -101,6 +103,7 @@ typedef struct _MPEGMBXY
 typedef struct _MPEGMacroBlock8 
 {
  unsigned char m_Y [16][16];
+
  unsigned char m_Cb[  8 ][  8 ];
  unsigned char m_Cr[  8 ][  8 ];
 } _MPEGMacroBlock8;
@@ -171,6 +174,9 @@ typedef struct _MPEGContext
  int               m_FCode[2][2];
  int               m_CurMC;
  _MPEGMotions      m_MC[2];
+ int               m_FCode[ 2 ][ 2 ];
+ int               m_CurMC;
+ _MPEGMotions      m_MC[ 2 ];
  _MPEGMotions*     m_pCurMotions;
 } _MPEGContext;
 
@@ -193,7 +199,6 @@ class Video
   void MPEG_set_volume(int volume);
   void MPEG_get_resolution(MPEGSequenceInfo *m_Width, MPEGSequenceInfo *m_Height);
 };
-
 
 int MPEG_GetMBAI();
   void MPEG_SetDefQM();
@@ -231,6 +236,46 @@ int MPEG_GetMBAI();
   int MPEG_GetDMVector();
   unsigned int MPEG_NextStartCode();
   void MPEG_AlignBits();
+/* 
+solve this later
+private:
+  int MPEG_GetMBAI();
+  void MPEG_SetDefQM();
+  void MPEG_SetQM();
+  void MPEG_SetIDCP( void                                              );
+  void MPEG_SetQSTIVFAS( void                                              );
+  void MPEG_SetPCT( unsigned int                                      );
+  void MPEG_BDEC( int, int, int, int, void*                         );
+  int MPEG_WaitBDEC( void                                              );
+  void MPEG_dma_ref_image( _MPEGMacroBlock8*, _MPEGMotion*, int, int         );
+  void MPEG_do_mc( _MPEGMotion*                                      );
+  void MPEG_put_luma( _MPEGMotion*                                      );
+  void MPEG_put_luma_X( _MPEGMotion*                                      );
+  void MPEG_put_luma_Y( _MPEGMotion*                                      );
+  void MPEG_put_luma_XY( _MPEGMotion*                                      );
+  void MPEG_put_chroma( void                                              );
+  void MPEG_put_chroma_X( void                                              );
+  void MPEG_put_chroma_Y( void                                              );
+  void MPEG_put_chroma_XY( void                                              );
+  void MPEG_avg_luma( _MPEGMotion*                                      );
+  void MPEG_avg_luma_X( _MPEGMotion*                                      );
+  void MPEG_avg_luma_Y( _MPEGMotion*                                      );
+  void MPEG_avg_luma_XY( _MPEGMotion*                                      );
+  void MPEG_avg_chroma( void                                              );
+  void MPEG_avg_chroma_X( void                                              );
+  void MPEG_avg_chroma_Y( void                                              );
+  void MPEG_avg_chroma_XY( void                                              );
+  void MPEG_put_block_fr( _MPEGMotions*                                     );
+  void MPEG_put_block_fl( _MPEGMotions*                                     );
+  void MPEG_put_block_il( _MPEGMotions*                                     );
+  void MPEG_add_block_ilfl( _MPEGMotions*                                     );
+  void MPEG_add_block_frfr( _MPEGMotions*                                     );
+  void MPEG_add_block_frfl( _MPEGMotions*                                     );
+  void MPEG_Set16( unsigned char                                     );
+  int MPEG_GetDMVector(void                                              );
+  unsigned int MPEG_NextStartCode( void                                              );
+  void MPEG_AlignBits( void                                              );
+  MPEGSequenceInfo*
   //destroy perhaps?
   void MPEG_Destroy();
   //picture
