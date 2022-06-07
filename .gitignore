@@ -36,3 +36,6 @@
 *.app
 *.erl
 *.elf
+
+#Assembly embed modules
+src/engine/embed/**
