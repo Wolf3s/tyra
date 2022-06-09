@@ -13,11 +13,18 @@
 
 #include "../models/audio_listener.hpp"
 #include "./file_service.hpp"
+#include "./file_manager.hpp"
 #include <tamtypes.h>
 #include <stdio.h>
 #include <audsrv.h>
 #include <kernel.h>
-#include <vector>
+#include <loadfile.h>
+
+extern void *libsd_irx;
+extern int size_libsd_irx;
+
+extern void *audsrv_irx;
+extern int size_audsrv_irx;
 
 struct AudioListenerRef
 {
@@ -39,6 +46,7 @@ public:
     Audio();
     ~Audio();
 
+    void init();
     // Song
 
     /** 
@@ -124,6 +132,8 @@ public:
      */
     void startThread(FileService *t_fileService);
 
+    void loadModules();
+
 private:
     u8 songLoaded, volume, realVolume, songPlaying, songInLoop, songFinished;
     u8 hack; // TODO
@@ -131,6 +141,7 @@ private:
     FILE *wav;
     audsrv_fmt_t format;
     FileService *fileService;
+    FileManager fileManager;
 
     char wavChunk[2 * 1024] __attribute__((aligned(16)));
     s32 chunkReadStatus;
@@ -148,7 +159,6 @@ private:
     void rewindSongToStart();
 
     void initSema();
-    void loadModules();
     void initAUDSRV();
     void threadLoop();
     static void mainThread();

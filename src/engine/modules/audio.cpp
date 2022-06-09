@@ -34,9 +34,6 @@ Audio::Audio()
 
     audioRef = this;
     initSema();
-    loadModules();
-    initAUDSRV();
-    setSongFormat();
 }
 
 Audio::~Audio() {}
@@ -45,13 +42,17 @@ Audio::~Audio() {}
 // Methods
 // ----
 
+void Audio::init()
+{
+    initAUDSRV();
+    setSongFormat();
+}
+
 void Audio::loadSong(const char *t_path)
 {
     if (songLoaded)
         unloadSong();
-    char *fullFilename = String::createConcatenated("host:", t_path);
-    wav = fopen(fullFilename, "rb");
-    delete[] fullFilename;
+    wav = fileManager.openFile(t_path);
     assertMsg(wav != NULL, "Failed to open wav file!");
     rewindSongToStart();
     songLoaded = true;
@@ -109,9 +110,7 @@ void Audio::removeSongListener(const u32 &t_id)
 
 audsrv_adpcm_t *Audio::loadADPCM(char *t_path)
 {
-    char *fullFilename = String::createConcatenated("host:", t_path);
-    FILE *file = fopen(fullFilename, "rb");
-    delete[] fullFilename;
+    FILE *file = fileManager.openFile(t_path);
     fseek(file, 0, SEEK_END);
     u32 adpcmFileSize = ftell(file);
     u8 data[adpcmFileSize];
@@ -261,12 +260,21 @@ void Audio::initSema()
 /** Load LIBSD and AUDSRV modules */
 void Audio::loadModules()
 {
-    consoleLog("Modules loading started (LIBSD, AUDSRV)");
-    int ret = SifLoadModule("rom0:LIBSD", 0, NULL);
-    assertMsg(ret != -203, "LIBSD loading failed!");
-    ret = SifLoadModule("host:AUDSRV.IRX", 0, NULL);
-    assertMsg(ret != -203, "AUDSRV.IRX loading failed!");
-    consoleLog("Audio modules loaded");
+    int ret;
+    // Load LIBSD and AUDSRV
+    consoleLog("Loading audio modules");
+    ret = SifExecModuleBuffer(&libsd_irx, size_libsd_irx, 0, NULL, NULL);
+    if (ret < 0)
+    {
+        consoleLog("Failed to load module: LIBSD");
+    }
+
+    ret = SifExecModuleBuffer(&audsrv_irx, size_audsrv_irx, 0, NULL, NULL);
+    if (ret < 0)
+    {
+        consoleLog("Failed to load module: AUDSRV");
+    }
+    consoleLog("Audio modules loaded!");
 }
 
 /** 
