@@ -12,6 +12,7 @@
 #ifndef TYRA_MD_LOADER_HPP
 #define TYRA_MD_LOADER_HPP
 #include "../models/mesh_frame.hpp"
+#include "../modules/file_manager.hpp"
 #include "md2_structure.hpp"
 #include "md3_structure.hpp"
 #include <stdio.h>
@@ -27,6 +28,8 @@ public:
 
     MeshFrame *load_md2(u32 &o_framesCount, char *t_subpath, char *t_nameWithoutExtension, float t_scale, u8 t_invertT);
 	MeshFrame *load_md3(u32 &o_framesCount, char *t_subpath, char *t_nameWithoutExtension, float t_scale, u8 t_invertT);
+
+    FileManager fileManager;
 };
 
 #endif //TYRA_MD_LOADER_HPP

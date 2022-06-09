@@ -12,6 +12,7 @@
 #define _TYRA_OBJ_LOADER_
 
 #include "../models/mesh_frame.hpp"
+#include "../modules/file_manager.hpp"
 #include <stdio.h>
 
 /** Class responsible for loading&parsing .obj 3D files */
@@ -30,6 +31,7 @@ public:
 
 private:
     void allocateObjMemory(FILE *t_file, MeshFrame *t_result);
+    FileManager fileManager;
 };
 
 #endif

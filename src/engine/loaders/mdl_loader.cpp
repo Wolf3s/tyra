@@ -46,14 +46,10 @@ int MEM_fread(char *buf, size_t size, size_t n, const FILE *f)
 MeshFrame *MDLoader::load_md2(u32 &o_framesCount, char *t_subpath, char *t_nameWithoutExtension, float t_scale, u8 t_invertT)
 {
     consoleLog("Loading new MD2 file");
-    char *part1 = String::createConcatenated(t_subpath, t_nameWithoutExtension);
-    char *part2 = String::createConcatenated("host:", part1);
-    char *finalPath = String::createConcatenated(part2, ".md2"); // "folder/object.md2"
-    delete[] part1;
-    delete[] part2;
+    
     md2_t header;
 
-    FILE *file = fopen(finalPath, "rb");
+    FILE *file = fileManager.openFile(t_subpath, t_nameWithoutExtension, ".md2");
     assertMsg(file != NULL, "Failed to load .md2 file!");
 
     fread((char *)&header, sizeof(md2_t), 1, file);
@@ -140,7 +136,6 @@ MeshFrame *MDLoader::load_md2(u32 &o_framesCount, char *t_subpath, char *t_nameW
     }
 
     consoleLog("MD2 file loaded!");
-    delete[] finalPath;
     o_framesCount = framesCount;
     for (u32 i = 0; i < framesCount; i++)
         resultFrames[i].calculateBoundingBoxes();
@@ -151,11 +146,7 @@ MeshFrame *MDLoader::load_md2(u32 &o_framesCount, char *t_subpath, char *t_nameW
 MeshFrame *MDLoader::load_md3(u32 &o_framesCount, char *t_subpath, char *t_nameWithoutExtension, float t_scale, u8 t_invertT)
 {
     consoleLog("Loading new MD3 file");
-    char *part1 = String::createConcatenated(t_subpath, t_nameWithoutExtension);
-    char *part2 = String::createConcatenated("host:", part1);
-    char *finalPath = String::createConcatenated(part2, ".md3"); // "folder/object.md2"
-    delete[] part1;
-    delete[] part2;
+
     md3Header_t header;
     
     md3XyzNormal_t normal;
@@ -164,7 +155,7 @@ MeshFrame *MDLoader::load_md3(u32 &o_framesCount, char *t_subpath, char *t_nameW
     
     md3Surface_t surface;
 
-    FILE *file = fopen(finalPath, "rb");
+    FILE *file = fileManager.openFile(t_subpath, t_nameWithoutExtension, ".md3");
     assertMsg(file != NULL, "Failed to load .md3 file!");
 
     fread((char *)&header, sizeof(md3Header_t), 1, file);
@@ -251,7 +242,6 @@ MeshFrame *MDLoader::load_md3(u32 &o_framesCount, char *t_subpath, char *t_nameW
     }
 
     consoleLog("MD3 file loaded!");
-    delete[] finalPath;
     o_framesCount = framesCount;
     for (u32 i = 0; i < framesCount; i++)
         resultFrames[i].calculateBoundingBoxes();

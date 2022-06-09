@@ -32,12 +32,7 @@ BmpLoader::~BmpLoader() {}
  */
 void BmpLoader::load(Texture &o_texture, const char *t_subfolder, const char *t_name, const char *t_extension)
 {
-    char *path_part1 = String::createConcatenated(t_subfolder, t_name);
-    char *path_part2 = String::createConcatenated("host:", path_part1);
-    char *path = String::createConcatenated(path_part2, t_extension);
-    delete[] path_part1;
-    delete[] path_part2;
-    FILE *file = fopen(path, "rb");
+    FILE *file = fileManager.openFile(t_subfolder, t_name, t_extension);
     assertMsg(file != NULL, "Failed to load .bmp file!");
 
     unsigned char header[54];
@@ -73,6 +68,5 @@ void BmpLoader::load(Texture &o_texture, const char *t_subfolder, const char *t_
             x += 3;
         }
     }
-    delete[] path;
     fclose(file);
 }

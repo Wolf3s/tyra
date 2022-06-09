@@ -34,11 +34,10 @@ DffLoader::~DffLoader() {}
 // Methods
 // ----
 
-void DffLoader::load(MeshFrame *o_result, const char *t_filename, const float &t_scale, const u8 &t_invertT)
+void DffLoader::load(MeshFrame *o_result, const char *t_path, const float &t_scale, const u8 &t_invertT)
 {
     consoleLog("Loading dff file");
-    char *path = String::createConcatenated("host:", t_filename);
-    FILE *file = fopen(path, "rb");
+    FILE *file = fileManager.openFile(t_path);
     assertMsg(file != NULL, "Failed to load .dff file!");
     fseek(file, 0L, SEEK_END);
     long fileSize = ftell(file);
@@ -48,7 +47,6 @@ void DffLoader::load(MeshFrame *o_result, const char *t_filename, const float &t
     fclose(file);
     serialize(o_result, t_invertT, data, t_scale);
     o_result->calculateBoundingBoxes();
-    delete[] path;
     consoleLog("Dff file loaded!");
 }
 

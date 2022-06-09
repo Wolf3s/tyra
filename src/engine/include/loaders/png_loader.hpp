@@ -11,9 +11,10 @@
 #ifndef _TYRA_PNG_LOADER_
 #define _TYRA_BMP_LOADER_
 
-#include <stdio.h>
+#include <cstdio>
 #include <tamtypes.h>
 #include "../models/texture.hpp"
+#include "../modules/file_manager.hpp"
 
 /** Class responsible for loading images in bmp format */
 class PngLoader
@@ -24,6 +25,7 @@ public:
     ~PngLoader();
 
     void load(Texture &o_texture, const char *t_subfolder, const char *t_name, const char *t_extension);
+    FileManager fileManager;
 };
 
 #endif

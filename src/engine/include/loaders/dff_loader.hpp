@@ -13,6 +13,7 @@
 
 #include "../models/mesh_frame.hpp"
 #include "./dff_structure.hpp"
+#include "../modules/file_manager.hpp"
 
 /** Class responsible for loading&parsing .obj 3D files */
 class DffLoader
@@ -23,7 +24,7 @@ public:
     ~DffLoader();
 
     // void im_not_used_anywhere(MeshFrame *o_result, char *t_fileName, float t_scale, u8 t_invertT);
-    void load(MeshFrame *o_result, const char *t_fileName, const float &t_scale, const u8 &t_invertT);
+    void load(MeshFrame *o_result, const char *t_path, const float &t_scale, const u8 &t_invertT);
     void serialize(MeshFrame *o_result, u8 t_invertT, u8 *t_data, float t_scale);
 
 private:
@@ -44,6 +45,8 @@ private:
     u32 readDwordFromArrayLE(u8 *t_buffer, u32 &t_ptrPos);
     float readFloatFromArrayLE(u8 *t_buffer, u32 &t_ptrPos);
     char *readString(u8 *t_buffer, u32 &t_ptrPos, u32 t_dataSize = 0);
+
+    FileManager fileManager;
 };
 
 #endif

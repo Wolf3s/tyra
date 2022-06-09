@@ -77,7 +77,7 @@ void FileService::startThread()
     thread.gp_reg = (void *)&_gp;
     thread.initial_priority = 0x12;
     threadId = CreateThread(&thread);
-    assertMsg(threadId >= 0, "Create audio thread failed!");
+    assertMsg(threadId >= 0, "Create file service thread failed!");
     consoleLog("File service created");
     StartThread(threadId, NULL);
     consoleLog("File service started");

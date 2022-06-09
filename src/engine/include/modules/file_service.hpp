@@ -1,7 +1,7 @@
 /*
 # ______       ____   ___
-#   |     \/   ____| |___|    
-#   |     |   |   \  |   |       
+#   |     \/   ____| |___|
+#   |     |   |   \  |   |
 #-----------------------------------------------------------------------
 # Copyright 2020, tyra - https://github.com/h4570/tyra
 # Licenced under Apache License 2.0
@@ -27,31 +27,31 @@ struct FileServiceTask
 
     u32 id;
 
-    /** 
+    /**
      * Used by types:
      * - ReadChunk
      */
     FILE *file;
 
-    /** 
+    /**
      * Used by types:
      * - ReadChunk
      */
     s32 readStatus;
 
-    /** 
+    /**
      * Used by types:
      * - ReadChunk
      */
     void *destination;
 
-    /** 
+    /**
      * Used by types:
      * - ReadChunk
      */
     u32 size;
 
-    /** 
+    /**
      * Used by types:
      * - ReadChunk
      */
@@ -67,25 +67,25 @@ public:
     FileService();
     ~FileService();
 
-    /** 
-     * Add task to read next chunk. ( fread() ) 
+    /**
+     * Add task to read next chunk. ( fread() )
      * @returns Task id
      */
     u32 addReadChunk(FILE *t_file, void *t_destination, const u32 &t_size, const u32 &t_n);
 
-    /** 
-     * Check if given task was done. 
-     * When task is done, this method will return read status. 
-     * After this, task is removed from file service, so this method 
+    /**
+     * Check if given task was done.
+     * When task is done, this method will return read status.
+     * After this, task is removed from file service, so this method
      * will return something once per task.
      * @returns Read status (ex. result of fread()). -2137 if task is not done.
      */
     s32 isTaskDone(const u32 &t_taskId);
 
-    /** 
+    /**
      * Start file service thread.
      * Do not call this method unless you know what you do.
-     * Should be called by engine. 
+     * Should be called by engine.
      */
     void startThread();
 
@@ -98,7 +98,7 @@ private:
     /** Remove task by id */
     const void removeById(const u32 &t_taskId);
 
-    /** 
+    /**
      * Get index of task.
      * @returns Index of task. -1 if not found.
      */

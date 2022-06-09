@@ -33,13 +33,7 @@ PngLoader::~PngLoader() {}
  */
 void PngLoader::load(Texture &o_texture, const char *t_subfolder, const char *t_name, const char *t_extension)
 {
-    char *path_part1 = String::createConcatenated(t_subfolder, t_name);
-    char *path_part2 = String::createConcatenated("host:", path_part1);
-    char *path = String::createConcatenated(path_part2, t_extension);
-    delete[] path_part1;
-    delete[] path_part2;
-
-    FILE *file = fopen(path, "rb");
+    FILE *file = fileManager.openFile(t_subfolder, t_name, t_extension);
     assertMsg(file != NULL, "Failed to open .png file!");
 
     png_structp png_ptr;
@@ -55,6 +49,7 @@ void PngLoader::load(Texture &o_texture, const char *t_subfolder, const char *t_
     assertMsg(info_ptr, "PNG info struct init failed!");
     assertMsg(!setjmp(png_jmpbuf(png_ptr)), "PNG reader fatal error!");
 
+    printf("PNG INIT IO\n");
     png_init_io(png_ptr, file);
     png_set_sig_bytes(png_ptr, sig_read);
     png_read_info(png_ptr, info_ptr);
@@ -121,6 +116,5 @@ void PngLoader::load(Texture &o_texture, const char *t_subfolder, const char *t_
     png_read_end(png_ptr, NULL);
     png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)NULL);
 
-    delete[] path;
     fclose(file);
 }
