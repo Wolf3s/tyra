@@ -1,7 +1,7 @@
 /*
 # ______       ____   ___
-#   |     \/   ____| |___|    
-#   |     |   |   \  |   |       
+#   |     \/   ____| |___|
+#   |     |   |   \  |   |
 #-----------------------------------------------------------------------
 # Copyright 2020, tyra - https://github.com/h4570/tyra
 # Licenced under Apache License 2.0
@@ -10,19 +10,13 @@
 
 #include "include/engine.hpp"
 
-#include <kernel.h>
-#include <stdio.h>
-#include <sifrpc.h>
-#include <time.h>
-#include <cstdlib>
-#include "include/utils/debug.hpp"
-
 // ----
 // Constructors/Destructors
 // ----
 
 Engine::Engine()
 {
+    loadExternalModules();
     setDefaultScreen();
     firePS2();
 }
@@ -71,10 +65,10 @@ void Engine::wakeup(s32 t_alarmId, u16 t_time, void *t_common)
 
 void Engine::firePS2()
 {
-    SifInitRpc(0);
     srand(time(NULL));
     // fileService.startThread();
     // audio.startThread(&fileService);
+    audio.init();
     audio.startThread(NULL);
     isInitialized = 0;
     mainThreadId = GetThreadId();
@@ -96,5 +90,84 @@ void Engine::gameLoop()
         /** -6~ FPS */
         SetAlarm(150, &Engine::wakeup, &mainThreadId);
         SleepThread();
+    }
+}
+
+void Engine::waitUntilUsbDeviceIsReady()
+{
+    struct stat buffer;
+    int ret = -1;
+    int retries = 50;
+
+    delay(5); // some delay is required by usb mass storage driver
+
+    while (ret != 0 && retries > 0)
+    {
+        ret = stat("mass:/", &buffer);
+        /* Wait until the device is ready */
+        nopdelay();
+
+        retries--;
+    }
+}
+
+void Engine::loadExternalModules()
+{
+
+    consoleLog("Loading external modules...\n");
+    int i, ret, sometime;
+
+    SifInitRpc(0);
+
+    // Apply the SBV LMB patch to allow modules to be loaded from a buffer in EE RAM.
+    consoleLog("Applying SBV Patches...\n");
+    ret = sbv_patch_enable_lmb();
+    if (ret < 0)
+    {
+        consoleLog("Failed to load Applying SBV Patches sbv_patch_enable_lmb");
+    }
+    ret = sbv_patch_disable_prefix_check();
+    if (ret < 0)
+    {
+        consoleLog("Failed to load Applying SBV Patches sbv_patch_disable_prefix_check");
+    }
+    ret = sbv_patch_fileio();
+    if (ret < 0)
+    {
+        consoleLog("Failed to load Applying SBV Patches sbv_patch_fileio");
+    }
+
+    // Load audio modules
+    audio.loadModules();
+
+    // Load USB mass modules
+    consoleLog("Loading USB modules\n");
+
+    SifExecModuleBuffer(&usbd_irx, size_usbd_irx, 0, NULL, &ret);
+    if (ret < 0)
+    {
+        consoleLog("Failed to load module: usbd");
+    }
+
+    SifExecModuleBuffer(&usbhdfsd_irx, size_usbhdfsd_irx, 0, NULL, &ret);
+    if (ret < 0)
+    {
+        consoleLog("Failed to load module: usbhdfsd");
+    }
+
+    waitUntilUsbDeviceIsReady();
+    
+    printf("modules load OK\n");
+}
+
+void Engine::delay(int count)
+{
+    int i;
+    int ret;
+    for (i = 0; i < count; i++)
+    {
+        ret = 0x01000000;
+        while (ret--)
+            asm("nop\nnop\nnop\nnop");
     }
 }
