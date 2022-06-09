@@ -21,12 +21,6 @@
 #include "../utils/debug.hpp"
 #include "../utils/string.hpp"
 
-#ifdef NDEBUG
-#define FS_SOURCE ""
-#else
-#define FS_SOURCE "host:"
-#endif
-
 class FileManager
 {
 

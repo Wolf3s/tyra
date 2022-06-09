@@ -73,6 +73,5 @@ void FileManager::setPathInfo(char *path)
 
 char *FileManager::getBasePath()
 {
-    char *result = FS_SOURCE;
-    return (sizeof(FS_SOURCE) > 1) ? result : cwd;
+    return this->cwd;
 }
