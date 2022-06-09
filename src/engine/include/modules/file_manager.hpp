@@ -12,7 +12,7 @@
 #define _TYRA_FILE_MANAGER_
 
 #include <tamtypes.h>
-#include <stdio.h>
+#include <cstdio>
 #include <kernel.h>
 #include "../utils/debug.hpp"
 #include "../utils/string.hpp"
