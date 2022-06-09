@@ -2,13 +2,12 @@ TYRA_DIR = ./
 
 BIN2S = $(PS2SDK)/bin/bin2s
 
-IOP_MODULES = 	embed/libsd.o \
-				embed/usbd.o \
-				embed/usbhdfsd.o \
-				embed/audsrv.o
+IOP_MODULES = 	libsd.o \
+				usbd.o \
+				usbhdfsd.o \
+				audsrv.o
 
 EE_OBJS =								\
-	$(IOP_MODULES)						\
 	models/math/matrix.o				\
 	models/math/plane.o					\
 	models/math/point.o					\
@@ -41,10 +40,12 @@ EE_OBJS =								\
 	vu1_progs/draw3D.o					\
 	engine.o
 
-all: $(EE_OBJS) 
-	-T$(LINKFILE)
+all: $(IOP_MODULES) $(EE_OBJS) 
 	ar rcs $(LIB_NAME) $(EE_OBJS)
 	rm -f $(EE_OBJS)
+	rm -f $(IOP_MODULES)
+	rm -f *.s
+	echo "Success!"
 
 # %.vcl: %.vclpp
 #	 $(EE_VCLPP) $< $@
@@ -58,20 +59,21 @@ all: $(EE_OBJS)
 clean:
 	rm -f $(EE_OBJS)
 	rm -f $(LIB_NAME)
+	rm -f *.s 
 
-embed/libsd.s: $(PS2SDK)/iop/irx/libsd.irx
+libsd.s: $(PS2SDK)/iop/irx/libsd.irx
 	echo "Embedding LIBDS..."
 	$(BIN2S) $< $@ libsd_irx
 
-embed/usbd.s: $(PS2SDK)/iop/irx/usbd.irx
+usbd.s: $(PS2SDK)/iop/irx/usbd.irx
 	echo "Embedding USB Driver..."
 	$(BIN2S) $< $@ usbd_irx
 
-embed/audsrv.s: $(PS2SDK)/iop/irx/audsrv.irx
+audsrv.s: $(PS2SDK)/iop/irx/audsrv.irx
 	echo "Embedding AUDSRV Driver..."
 	$(BIN2S) $< $@ audsrv_irx
 
-embed/usbhdfsd.s: $(PS2SDK)/iop/irx/usbhdfsd.irx
+usbhdfsd.s: $(PS2SDK)/iop/irx/usbhdfsd.irx
 	echo "Embedding USBHDFSD Driver..."
 	$(BIN2S) $< $@ usbhdfsd_irx
 

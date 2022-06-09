@@ -12,14 +12,13 @@ LIB_NAME = libtyra.a
 
 BIN2S = $(PS2SDK)/bin/bin2s
 
-IOP_MODULES = 	src/engine/embed/libsd.o \
-				src/engine/embed/usbd.o \
-				src/engine/embed/usbhdfsd.o \
-				src/engine/embed/audsrv.o
+IOP_MODULES = 	libsd.o \
+				usbd.o \
+				usbhdfsd.o \
+				audsrv.o
 
 # ENGINE OBJECTS 
-ENGINE_OBJS = 									\
-				$(IOP_MODULES)					\
+ENGINE_OBJS = 						\
 				src/engine/engine.o \
 				src/engine/modules/audio.o \
 				src/engine/modules/camera_base.o \
@@ -65,10 +64,13 @@ EE_VCL = vcl
 
 EE_VCLPP = vclpp
 
-all: $(ENGINE_OBJS) 
+all: $(IOP_MODULES) $(ENGINE_OBJS) 
 	ar rcs $(LIB_NAME) $(ENGINE_OBJS)
 	cp -f $(LIB_NAME) $(PS2SDK)/ee/lib
 	rm -f $(ENGINE_OBJS)
+	rm -f $(IOP_MODULES)
+	rm -f *.s
+	echo "Success!"
 
 # Cube example
 cube:
@@ -91,7 +93,7 @@ rebuild-engine:
 
 # Rebuild debug engine
 rebuild-dbg-engine: 
-	$(MAKE) -C src/engine && make && make
+	$(MAKE) -C src/engine && make
 
 # Unit tests folder
 tests: 
@@ -106,19 +108,19 @@ tests:
 %.o: %.vsm
 	$(EE_DVP) $< -o $@
 
-src/engine/embed/libsd.s: $(PS2SDK)/iop/irx/libsd.irx
+libsd.s: $(PS2SDK)/iop/irx/libsd.irx
 	echo "Embedding LIBDS..."
 	$(BIN2S) $< $@ libsd_irx
 
-src/engine/embed/usbd.s: $(PS2SDK)/iop/irx/usbd.irx
+usbd.s: $(PS2SDK)/iop/irx/usbd.irx
 	echo "Embedding USB Driver..."
 	$(BIN2S) $< $@ usbd_irx
 
-src/engine/embed/audsrv.s: $(PS2SDK)/iop/irx/audsrv.irx
+audsrv.s: $(PS2SDK)/iop/irx/audsrv.irx
 	echo "Embedding AUDSRV Driver..."
 	$(BIN2S) $< $@ audsrv_irx
 
-src/engine/embed/usbhdfsd.s: $(PS2SDK)/iop/irx/usbhdfsd.irx
+usbhdfsd.s: $(PS2SDK)/iop/irx/usbhdfsd.irx
 	echo "Embedding USBHDFSD Driver..."
 	$(BIN2S) $< $@ usbhdfsd_irx
 
